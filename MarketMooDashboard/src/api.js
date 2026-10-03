@@ -1,5 +1,8 @@
 // Small fetch wrapper for the MarketMoo manager API. The token lives in sessionStorage, so closing the tab signs out.
-export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '')
+// VITE_API_URL wins when set. Otherwise production builds use the public API of the trial deployment
+// (an address, not a secret) and development uses a local server.
+const DEFAULT_API = import.meta.env.PROD ? 'https://marketmoo-api.onrender.com' : 'http://localhost:8000'
+export const API_URL = (import.meta.env.VITE_API_URL || DEFAULT_API).replace(/\/$/, '')
 const KEY = 'marketmoo_manager_token'
 
 export const getToken = () => sessionStorage.getItem(KEY)
