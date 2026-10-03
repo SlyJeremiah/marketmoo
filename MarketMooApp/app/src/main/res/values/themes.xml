@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.MarketMoo" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#155C2B</item>
+        <item name="android:navigationBarColor">#FAF7F0</item>
+        <item name="android:windowBackground">#FAF7F0</item>
+    </style>
+</resources>

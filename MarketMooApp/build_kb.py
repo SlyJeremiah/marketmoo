@@ -1,0 +1,39 @@
+"""Builds app/src/main/assets/kb.json from the curated content of the HTML prototype (v1.2).
+All entries are DRAFT and need veterinary review before field use (see Design Document, R-19)."""
+import json
+
+advisor = [
+    dict(title="January disease (theileriosis) in cattle", keywords=["january disease", "theileriosis", "theileria", "brown ear tick"],
+         body="Spread by brown ear ticks. Watch for: high fever (40 to 41 C), swollen lymph nodes behind the ears, loss of appetite and weight, difficulty breathing, cloudy eyes. Late stages: nervous signs, collapse, death, often within 1 to 2 weeks. Act fast: call a vet and start strict tick control.",
+         sources=["Department of Veterinary Services, Zimbabwe"]),
+    dict(title="Tick control and dipping", keywords=["tick", "ticks", "dipping", "dip tank"],
+         body="Dip weekly in the rainy season (November to April) and every two weeks in the dry season. Rotate chemical groups (for example amitraz, cypermethrin, deltamethrin) to slow resistance. If there is no dip tank nearby, spray the whole body with a knapsack sprayer, especially ears, tail, belly and under the legs.",
+         sources=["Department of Veterinary Services, Zimbabwe"]),
+    dict(title="Newcastle disease in poultry", keywords=["newcastle", "chicken disease", "chickens sick", "gasping"],
+         body="Highly contagious. Signs: gasping, coughing, sneezing, nasal discharge, greenish watery droppings, twisted neck, paralysis, sudden deaths in young birds. There is no treatment. Prevent with vaccination (day 7, booster day 21, then every 3 months). Isolate sick birds, disinfect equipment, quarantine new birds for 2 weeks.",
+         sources=["FAO poultry health"]),
+    dict(title="African Swine Fever in pigs", keywords=["african swine fever", "asf", "pigs dying", "pig disease"],
+         body="No vaccine and no treatment. Signs: high fever, loss of appetite, red or purple skin patches (ears, belly, legs), vomiting, diarrhoea, many pigs dying suddenly. Report to the Department of Veterinary Services immediately. Do not move pigs or pork off the farm. Follow the Department's instructions on destruction, disinfection and restocking.",
+         sources=["WOAH", "Department of Veterinary Services, Zimbabwe"]),
+    dict(title="Foot rot in goats and sheep", keywords=["foot rot", "lame", "lameness", "hooves"],
+         body="Bacterial disease of wet, muddy conditions. Signs: lameness, foul smell from the hoof, swelling between the toes. Trim the hoof to expose infection, use a zinc sulphate or copper sulphate footbath, move animals to dry ground, and ask a vet about antibiotics. Prevent by keeping pens dry and trimming hooves every 3 months.",
+         sources=["Department of Veterinary Services, Zimbabwe"]),
+    dict(title="Anthrax", keywords=["anthrax", "sudden death", "cattle dead", "carcass"],
+         body="Anthrax can spread to people. Signs in animals: sudden death, blood from nose, mouth or anus, bloated carcass. Do NOT open the carcass. Report to the Department of Veterinary Services at once, keep people and animals away, and vaccinate remaining animals as directed. If you handled a suspect carcass and have sores or breathing problems, see a doctor.",
+         sources=["WHO anthrax fact sheet", "Department of Veterinary Services, Zimbabwe"]),
+    dict(title="Cattle vaccination schedule", keywords=["vaccination", "vaccinate", "vaccine schedule"],
+         body="Typical yearly vaccines before the rainy season: anthrax, blackleg, botulism where needed, lumpy skin disease. Foot-and-mouth vaccination only as directed by the vet or Department in affected zones. Brucellosis (S19) for heifers 4 to 8 months. Ask your local vet for the schedule for your area.",
+         sources=["Department of Veterinary Services, Zimbabwe"]),
+    dict(title="Deworming goats", keywords=["deworming", "worms", "famacha"],
+         body="Deworm about every 3 months or by FAMACHA eyelid colour score (pale means anaemia from worms). Rotate dewormer groups yearly, rotate paddocks, avoid overstocking, keep bedding dry and provide mineral licks.",
+         sources=["FAO goat health"]),
+]
+guides = [
+    dict(title="Cattle husbandry", body="Breeding: watch heat cycles every 18 to 24 days. Feeding: natural pasture with hay, silage or feed in the dry season. Vaccination and dipping: follow the annual vet schedule; dip weekly in the rainy season. Common diseases: theileriosis, anaplasmosis, babesiosis, foot rot."),
+    dict(title="Goat husbandry", body="Housing: raised, dry, ventilated shelter, about 1.5 square metres per adult. Feeding: browse plus legume hay, crop residues and mineral blocks. Deworm every 3 months or by FAMACHA. Common problems: PPR, mange, worms, pneumonia."),
+    dict(title="Pig husbandry", body="Housing: washable floors, 1.5 to 2 square metres per pig. Feeding: balanced ration of maize, soya and minerals. Hygiene: clean daily, footbaths, quarantine new animals. African Swine Fever has no vaccine: report suspected cases at once."),
+    dict(title="Poultry husbandry", body="Brooding: 32 C in week 1, reduce by about 3 C each week; clean water and starter feed. Feeding by stage: starter, grower, finisher. Vaccination: Newcastle and Gumboro as scheduled. Biosecurity: limit visitors, disinfect shoes and equipment."),
+    dict(title="Weather and climate", body="Dry spells: plan supplementary feed and water. Heat: give shade and water, especially to cattle and poultry. Cold snaps: protect young animals from pneumonia. After heavy rain watch for anthrax and blackleg; in warm wet months watch for ticks."),
+]
+json.dump(dict(advisor=advisor, guides=guides), open("app/src/main/assets/kb.json", "w", encoding="utf8"), indent=1, ensure_ascii=False)
+print("kb ok")

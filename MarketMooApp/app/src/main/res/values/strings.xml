@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MarketMoo</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_market">Market</string>
+    <string name="tab_map">Map</string>
+    <string name="tab_learn">Learn</string>
+    <string name="tab_help">Help</string>
+</resources>

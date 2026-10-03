@@ -1,0 +1,33 @@
+{
+ "events": [
+  {
+   "id": "E1",
+   "disease": "Foot-and-mouth disease (SAT 1)",
+   "species": "Cattle",
+   "date": "2026-01-05",
+   "district": "Mangwe",
+   "province": "Matabeleland South",
+   "places": "Maholi and Hannavale dip tanks",
+   "detail": "54 cases among 2,403 cattle; quarantine, movement restrictions, vaccination within a 20 km radius",
+   "source": "https://allafrica.com/stories/202601290360.html",
+   "location_quality": "district-level (dip tank coordinates not found); Mangwe centroid used"
+  }
+ ],
+ "campaign": {
+  "date": "2026-05-13",
+  "vaccinated": 72227,
+  "targeted": 78034,
+  "source": "https://dairybusinessmea.com/2026/05/13/zimbabwe-botswana-vaccinate-72000-cattle-against-fmd-as-south-africa-battles-outbreak-control-challenges/"
+ },
+ "theileriosis": {
+  "district": "Mhondoro-Ngezi",
+  "note": "Described as a district badly affected by theileriosis (January disease) in a survey of 320 farmers",
+  "source": "https://www.researchsquare.com/article/rs-2087240/v1"
+ },
+ "campaign_districts": [
+  "Beitbridge",
+  "Gwanda",
+  "Mangwe",
+  "Matobo"
+ ]
+}

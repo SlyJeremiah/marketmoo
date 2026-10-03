@@ -1,0 +1,4 @@
+district,in_fmd_campaign_district,pct_area_in_control20,pct_area_in_surv40,pct_pop_in_surv40,mean_rain_mm,pct_area_tick_high,pct_area_tick_moderate,pct_area_tick_low,destinations_in_district,destinations_in_surv40
+Mhondoro-Ngezi,False,0.0,0.0,0.0,686.8938598632812,27.37873134328358,72.62126865671642,0.0,1,0
+Gwanda,True,0.0,0.0,0.0,427.3569641113281,0.0,0.2702954609003635,99.72970453909964,45,0
+Beitbridge,True,0.0,0.0,0.0,338.6437683105469,0.0,0.06253908692933083,99.93746091307067,19,0

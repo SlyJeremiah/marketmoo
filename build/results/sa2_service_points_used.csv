@@ -1,0 +1,4 @@
+osm_id,name,lon,lat,kind,weight,source
+proxy:n4222345045,"DVS district office, Turf Town (proxy)",30.2879548,-18.6760686,DVS office (proxy),1.0,ASSUMED at main town
+proxy:n297522524,"DVS district office, Gwanda (proxy)",29.0036855,-20.9414292,DVS office (proxy),1.0,ASSUMED at main town
+proxy:n2144877644,"DVS district office, Beitbridge (proxy)",29.9917535,-22.1986233,DVS office (proxy),1.0,ASSUMED at main town

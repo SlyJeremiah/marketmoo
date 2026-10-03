@@ -1,0 +1,26 @@
+{
+ "rows": [
+  {
+   "district": "Mhondoro-Ngezi",
+   "cells": 4288,
+   "sqlite_kb": 384.0,
+   "gz_kb": 100.9814453125,
+   "features": 19
+  },
+  {
+   "district": "Gwanda",
+   "cells": 10729,
+   "sqlite_kb": 1028.0,
+   "gz_kb": 290.947265625,
+   "features": 111
+  },
+  {
+   "district": "Beitbridge",
+   "cells": 12792,
+   "sqlite_kb": 1200.0,
+   "gz_kb": 312.423828125,
+   "features": 52
+  }
+ ],
+ "summary": "312 KB or less per district compressed (704 KB for all three; 2612 KB uncompressed)"
+}

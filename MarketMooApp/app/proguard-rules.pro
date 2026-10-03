@@ -1,0 +1,3 @@
+-keep class net.zetetic.database.** { *; }
+-keep class org.maplibre.android.** { *; }
+-dontwarn org.maplibre.**

@@ -1,0 +1,55 @@
+# Separate repository (marketmoobackend)
+MarketMooApi/
+
+# Large or regenerable data and build output
+build/data/raw/
+build/data/rasters/
+build/data/big/
+build/data/graph.pkl
+build/data/*.pkl
+build/data/*.log
+build/data/geoportal.html
+build/data/dip.html
+build/node_modules/
+build/package-lock.json
+build/img/
+*.apk
+MarketMoo-debug.apk
+MarketMooApp/.gradle/
+MarketMooApp/build/
+MarketMooApp/app/build/
+MarketMooApp/*.log
+MarketMooApp/local.properties
+MarketMooApp/wrapper.log
+MarketMooDashboard/node_modules/
+MarketMooDashboard/dist/
+MarketMooDashboard/*.log
+
+# Secrets and local files
+.env
+.env.*
+!.env.example
+.secrets-tmp/
+.manager-credentials.txt
+*.pyc
+__pycache__/
+build/results/*.tif
+build/MarketMoo_*.docx
+MarketMooApp/app/src/main/assets/packs/*.sqlite.gz
+
+# one-off helper and patch scripts, superseded fetchers, logs
+build/patch*.py
+build/fixq*.py
+build/data/patch*.py
+build/data/probe.py
+build/data/g2.py
+build/data/nom.py
+build/data/q1.txt
+build/data/rels.json
+build/data/get_boundaries.py
+build/data/fetch_osm.py
+build/data/fetch_osm2.py
+build/data/fetch_osm3.py
+build/data/fetch_osm4.py
+build/data/nominatim_districts.json
+*.log
