@@ -78,6 +78,13 @@ class Api(private val baseUrl: () -> String, private val token: () -> String?) {
         call("POST", "/v1/auth/otp/verify", JSONObject().put("phone", phone).put("code", code).put("consent", consent), auth = false)
             .map { LoginResponse(it.getString("token"), profile(it.getJSONObject("profile")), it.optBoolean("created")) }
 
+    suspend fun passwordLogin(phone: String, password: String) =
+        call("POST", "/v1/auth/login", JSONObject().put("phone", phone).put("password", password), auth = false)
+            .map { LoginResponse(it.getString("token"), profile(it.getJSONObject("profile")), false) }
+
+    suspend fun changePassword(newPassword: String, oldPassword: String?): ApiResult<Unit> =
+        call("POST", "/v1/auth/password", JSONObject().put("new_password", newPassword).apply { if (!oldPassword.isNullOrEmpty()) put("old_password", oldPassword) }).map { }
+
     suspend fun me() = call("GET", "/v1/auth/me").map { profile(it) }
 
     suspend fun updateProfile(role: String, district: String, language: String) =

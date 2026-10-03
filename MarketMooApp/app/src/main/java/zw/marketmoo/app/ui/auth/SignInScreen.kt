@@ -34,7 +34,7 @@ import zw.marketmoo.app.data.net.ApiResult
 import zw.marketmoo.app.data.sync.SyncWorker
 
 /**
- * Phone number plus one-time code. No password and no national ID. Browsing, records and listings work
+ * Phone number plus either a one-time SMS code or a password set by a manager. No national ID. Browsing, records and listings work
  * without signing in; sign-in is what lets the app sync them to the server.
  */
 @Composable
@@ -48,6 +48,8 @@ fun SignInScreen(sl: ServiceLocator, onDone: () -> Unit) {
     var busy by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf<String?>(null) }
     var devCode by remember { mutableStateOf<String?>(null) }
+    var usePassword by remember { mutableStateOf(false) }
+    var password by remember { mutableStateOf("") }
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
     HeroScene(Modifier.fillMaxWidth(), height = 190.dp) {
@@ -58,11 +60,32 @@ fun SignInScreen(sl: ServiceLocator, onDone: () -> Unit) {
     }
     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
-            "Use your phone number. We send a 6-digit code by SMS. No password and no ID number are needed. " +
+            "Use your phone number. We send a 6-digit code by SMS, or use the Password tab if a manager gave you one. No ID number is needed. " +
                 "You can use MarketMoo without signing in; signing in lets your records and listings sync.",
             style = MaterialTheme.typography.bodyMedium,
         )
-        if (step == 0) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (!usePassword) Button(onClick = {}, modifier = Modifier.weight(1f)) { Text("Text code") } else OutlinedButton(onClick = { usePassword = false; message = null }, modifier = Modifier.weight(1f)) { Text("Text code") }
+            if (usePassword) Button(onClick = {}, modifier = Modifier.weight(1f)) { Text("Password") } else OutlinedButton(onClick = { usePassword = true; step = 0; message = null }, modifier = Modifier.weight(1f)) { Text("Password") }
+        }
+        if (usePassword) {
+            Text("Your manager can create an account for you and give you a password. Enter it here.", style = MaterialTheme.typography.bodyMedium)
+            OutlinedTextField(phone, { phone = it }, label = { Text("Phone number (for example 0771234567)") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
+            OutlinedTextField(password, { password = it }, label = { Text("Password") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
+            Button(enabled = !busy && phone.filter { it.isDigit() }.length >= 9 && password.length >= 8, modifier = Modifier.fillMaxWidth(), onClick = {
+                busy = true; message = null
+                scope.launch {
+                    when (val r = sl.api.passwordLogin(phone, password)) {
+                        is ApiResult.Ok -> { sl.session.signIn(r.value.token, r.value.profile); SyncWorker.enqueue(ctx); onDone() }
+                        is ApiResult.Failure -> message = if (r.offline) "No connection to the server. Check your signal or the server address in Account." else r.message
+                    }
+                    busy = false
+                }
+            }) { Text(if (busy) "Checking..." else "Sign in") }
+        } else if (step == 0) {
             OutlinedTextField(phone, { phone = it }, label = { Text("Phone number (for example 0771234567)") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
             Row(verticalAlignment = Alignment.CenterVertically) {

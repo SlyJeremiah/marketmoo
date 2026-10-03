@@ -53,6 +53,9 @@ fun AccountScreen(sl: ServiceLocator, onSignIn: () -> Unit) {
     var packMsg by remember { mutableStateOf<String?>(null) }
     var confirmDelete by remember { mutableStateOf(false) }
     var confirmWipe by remember { mutableStateOf(false) }
+    var changePw by remember { mutableStateOf(false) }
+    var oldPw by remember { mutableStateOf("") }
+    var newPw by remember { mutableStateOf("") }
 
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         GradientHeader("Account", "Your profile, server and data packs", Icons.Filled.Person, brush = Gradients.Dusk)
@@ -120,6 +123,7 @@ fun AccountScreen(sl: ServiceLocator, onSignIn: () -> Unit) {
         status?.let { Text(it, color = MaterialTheme.colorScheme.secondary) }
 
         if (profile != null) {
+            OutlinedButton(onClick = { oldPw = ""; newPw = ""; changePw = true }, modifier = Modifier.fillMaxWidth()) { Text("Set or change my password") }
             OutlinedButton(onClick = { sl.session.signOut() }, modifier = Modifier.fillMaxWidth()) { Text("Sign out") }
             Button(onClick = { confirmDelete = true }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error), modifier = Modifier.fillMaxWidth()) {
                 Text("Delete my account and data on the server")
@@ -128,6 +132,31 @@ fun AccountScreen(sl: ServiceLocator, onSignIn: () -> Unit) {
         OutlinedButton(onClick = { confirmWipe = true }, modifier = Modifier.fillMaxWidth()) { Text("Erase everything stored on this phone") }
     }
 
+    if (changePw) AlertDialog(
+        onDismissRequest = { changePw = false },
+        title = { Text("Password") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("A password lets you sign in with your phone number as well as with a text code. Use at least 8 characters.")
+                OutlinedTextField(oldPw, { oldPw = it }, label = { Text("Current password (if you have one)") }, singleLine = true,
+                    visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation())
+                OutlinedTextField(newPw, { newPw = it }, label = { Text("New password") }, singleLine = true,
+                    visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation())
+            }
+        },
+        confirmButton = {
+            TextButton(enabled = newPw.length >= 8, onClick = {
+                changePw = false
+                scope.launch {
+                    when (val r = sl.api.changePassword(newPw, oldPw)) {
+                        is ApiResult.Ok -> status = "Password saved."
+                        is ApiResult.Failure -> status = if (r.offline) "No connection. Try again when online." else r.message
+                    }
+                }
+            }) { Text("Save") }
+        },
+        dismissButton = { TextButton(onClick = { changePw = false }) { Text("Cancel") } },
+    )
     if (confirmDelete) AlertDialog(
         onDismissRequest = { confirmDelete = false },
         title = { Text("Delete your account?") },
