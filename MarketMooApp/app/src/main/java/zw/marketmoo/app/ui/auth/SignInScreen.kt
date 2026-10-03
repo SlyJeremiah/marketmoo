@@ -1,5 +1,7 @@
 package zw.marketmoo.app.ui.auth
 
+import zw.marketmoo.app.ui.components.HeroScene
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,8 +49,14 @@ fun SignInScreen(sl: ServiceLocator, onDone: () -> Unit) {
     var message by remember { mutableStateOf<String?>(null) }
     var devCode by remember { mutableStateOf<String?>(null) }
 
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("Sign in", style = MaterialTheme.typography.titleLarge)
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+    HeroScene(Modifier.fillMaxWidth(), height = 190.dp) {
+        Column(Modifier.padding(start = 22.dp, bottom = 40.dp)) {
+            Text("Welcome back", color = androidx.compose.ui.graphics.Color.White, fontSize = 30.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold)
+            Text("Sign in with your phone number", color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.95f), fontSize = 15.sp)
+        }
+    }
+    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
             "Use your phone number. We send a 6-digit code by SMS. No password and no ID number are needed. " +
                 "You can use MarketMoo without signing in; signing in lets your records and listings sync.",
@@ -90,5 +98,6 @@ fun SignInScreen(sl: ServiceLocator, onDone: () -> Unit) {
         }
         message?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         OutlinedButton(onClick = onDone, modifier = Modifier.fillMaxWidth()) { Text("Not now") }
+    }
     }
 }

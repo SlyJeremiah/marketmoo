@@ -1,5 +1,9 @@
 package zw.marketmoo.app.ui.report
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,7 +58,7 @@ fun ReportScreen(sl: ServiceLocator, onOpenMap: () -> Unit) {
     }
 
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("Disease notices and reports", style = MaterialTheme.typography.titleLarge)
+        GradientHeader("Disease alerts", "Active notices and suspected-outbreak reports", Icons.Filled.Warning, brush = Gradients.Rose)
         Text("Active notices", style = MaterialTheme.typography.titleMedium)
         noticeError?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary) }
         notices?.let { list ->
@@ -77,7 +81,7 @@ fun ReportScreen(sl: ServiceLocator, onOpenMap: () -> Unit) {
         OutlinedTextField(count, { count = it.filter(Char::isDigit) }, label = { Text("Animals affected") }, singleLine = true, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
         OutlinedTextField(desc, { desc = it }, label = { Text("What did you see?") }, modifier = Modifier.fillMaxWidth())
         if (pin == null) {
-            Text("Set your farm pin on the map so the report has a location.", color = MaterialTheme.colorScheme.error)
+            Text("Mark your farm on the map so the report has a location.", color = MaterialTheme.colorScheme.error)
             OutlinedButton(onClick = onOpenMap, modifier = Modifier.fillMaxWidth()) { Text("Open map") }
         }
         err?.let { Text(it, color = MaterialTheme.colorScheme.error) }

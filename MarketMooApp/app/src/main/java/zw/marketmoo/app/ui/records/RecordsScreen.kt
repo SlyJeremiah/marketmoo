@@ -1,5 +1,9 @@
 package zw.marketmoo.app.ui.records
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -54,7 +57,7 @@ fun RecordsScreen(sl: ServiceLocator) {
     var error by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 16.dp)) {
-        item { Text("Farm Records", style = MaterialTheme.typography.titleLarge) }
+        item { GradientHeader("Farm Records", "Saved on your phone first, even with no signal", Icons.Filled.EditNote, brush = Gradients.Earth) }
         item { Text("Saved on this phone first (encrypted). Works with no signal.", style = MaterialTheme.typography.bodyMedium) }
         item {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

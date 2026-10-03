@@ -53,3 +53,8 @@ build/data/fetch_osm3.py
 build/data/fetch_osm4.py
 build/data/nominatim_districts.json
 *.log
+
+# IDE settings
+MarketMooApp/.idea/
+*.iml
+MarketMooApp/.kotlin/

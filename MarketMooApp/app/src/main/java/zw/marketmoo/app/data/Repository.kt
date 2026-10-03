@@ -8,11 +8,14 @@ import java.io.File
 import java.util.UUID
 import org.json.JSONObject
 import zw.marketmoo.app.data.local.AppDatabase
+import zw.marketmoo.app.data.local.FarmBoundaryEntity
 import zw.marketmoo.app.data.local.ListingEntity
 import zw.marketmoo.app.data.local.RecordEntity
 import zw.marketmoo.app.data.local.SyncOp
 import zw.marketmoo.app.data.sync.SyncWorker
 import zw.marketmoo.app.util.Geo
+import zw.marketmoo.app.util.FarmShape
+import zw.marketmoo.app.util.Geometry
 
 /** Local-first writes: save to the encrypted DB, enqueue an operation, ask WorkManager to sync when connected. */
 class Repository(private val context: Context, private val db: AppDatabase) {
@@ -29,6 +32,27 @@ class Repository(private val context: Context, private val db: AppDatabase) {
     }
 
     suspend fun deleteRecord(id: String) = db.records().delete(id)
+
+    suspend fun loadBoundary(): FarmShape? =
+        db.boundary().current()?.let { runCatching { Geometry.fromGeoJson(JSONObject(it.geojson)) }.getOrNull() }
+
+    /** Saves the outline on the phone first, then queues it. [source] is "drawn" or "shapefile". */
+    suspend fun saveBoundary(shape: FarmShape, source: String) {
+        val id = db.boundary().current()?.id ?: UUID.randomUUID().toString()
+        val c = shape.centroid
+        val geo = Geometry.toGeoJson(shape)
+        db.boundary().upsert(FarmBoundaryEntity(id, geo.toString(), shape.areaHa, c.lat, c.lon, source))
+        val payload = JSONObject().put("geometry", geo).put("source", source).toString()
+        db.sync().enqueue(SyncOp(UUID.randomUUID().toString(), "farm_boundary", id, payload))
+        SyncWorker.enqueue(context)
+    }
+
+    suspend fun deleteBoundary() {
+        val id = db.boundary().current()?.id ?: return
+        db.boundary().clear()
+        db.sync().enqueue(SyncOp(UUID.randomUUID().toString(), "farm_boundary", id, JSONObject().put("deleted", true).toString()))
+        SyncWorker.enqueue(context)
+    }
 
     suspend fun addListing(
         species: String, breed: String, sex: String, age: Int, qty: Int, price: Double,

@@ -9,6 +9,9 @@ import zw.marketmoo.app.data.local.AppDatabase
 import zw.marketmoo.app.data.net.Api
 import zw.marketmoo.app.data.net.Profile
 import zw.marketmoo.app.data.pack.PackRepository
+import androidx.compose.runtime.mutableStateListOf
+import zw.marketmoo.app.util.FarmShape
+import zw.marketmoo.app.util.LatLon
 import zw.marketmoo.app.security.TokenStore
 
 class Settings(context: Context) {
@@ -17,8 +20,8 @@ class Settings(context: Context) {
         private set
     var demoSync by mutableStateOf(prefs.getBoolean("demo_sync", false))
         private set
-    /** Base URL of the MarketMoo API. 10.0.2.2 is the host computer as seen from the Android emulator. */
-    var serverUrl by mutableStateOf(prefs.getString("server_url", null) ?: BuildConfig.API_BASE_URL.ifBlank { "http://10.0.2.2:8000" })
+    /** Base URL of the MarketMoo API (the live trial server by default). */
+    var serverUrl by mutableStateOf(prefs.getString("server_url", null) ?: BuildConfig.API_BASE_URL.ifBlank { "https://marketmoo-api.onrender.com" })
         private set
 
     fun updateDataSaver(v: Boolean) { dataSaver = v; prefs.edit().putBoolean("data_saver", v).apply() }
@@ -57,6 +60,29 @@ class ServiceLocator private constructor(context: Context) {
     val repo = Repository(context, db)
     val packs = PackRepository(context)
     var pin by mutableStateOf<FarmPin?>(null)
+
+    /** The saved farm outline, if any. The pin above is its centre, so every insight keeps working. */
+    var boundary by mutableStateOf<FarmShape?>(null)
+        private set
+
+    /** Map drawing mode: corners tapped so far (kept here so they survive leaving the map screen). */
+    var drawing by mutableStateOf(false)
+    val draft = mutableStateListOf<LatLon>()
+
+    suspend fun loadBoundary() {
+        repo.loadBoundary()?.let { boundary = it; if (pin == null) pin = it.centroid.let { c -> FarmPin(c.lat, c.lon) } }
+    }
+
+    suspend fun saveBoundary(shape: FarmShape, source: String) {
+        repo.saveBoundary(shape, source)
+        boundary = shape
+        pin = shape.centroid.let { FarmPin(it.lat, it.lon) }
+    }
+
+    suspend fun removeBoundary() {
+        repo.deleteBoundary()
+        boundary = null
+    }
 
     companion object {
         @Volatile private var instance: ServiceLocator? = null

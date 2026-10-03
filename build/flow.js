@@ -56,6 +56,7 @@ c.push(...bullets([
   "Large downloads show their size first and can be paused; Data Saver mode blocks images and background refresh.",
   "A guest who taps a feature that needs an account (sell, join pool, records sync) is asked for the phone number, then returned to the exact screen they came from.",
   "Language can be changed from any screen via Account.",
+  "A Home icon in the top bar of every screen (and the Home tab) returns to the landing page and clears the screens opened above it.",
   "Disease warnings and restricted-zone flags always include a path to a vet or DVS contact.",
 ]));
 
@@ -120,7 +121,7 @@ c.push(h2("F6  Farm Insights (the four spatial analyses)"));
 c.push(...img("f6_insights.png", 6.0, "Figure 8: F6 Farm Insights"));
 c.push(table(["Step", "User", "System"], [
   ["1", "Opens Map", "Loads the offline basemap and facility layers from the district pack; if no pack, offers the download or a light online map"],
-  ["2", "Sets the farm pin", "GPS or tap on the map; saved to the profile"],
+  ["2", "Marks the farm boundary", "Draws it by tapping corners or adding GPS positions (live hectares), or uploads a zipped shapefile (converted on the phone, previewed in orange, confirmed). A quick pin is the fallback. The boundary centre becomes the pin and is saved to the profile; the outline stays private"],
   ["3", "Opens Insights and picks A, B, C or D", "Looks up the pin's cell in the cached grid and reads precomputed values"],
   ["A", "Market access", "Nearest 3 markets, travel time, indicative cost, isochrone overlay"],
   ["B", "Service access", "Nearest vet and dip tank with time; coverage class; if outside 60 minutes, offers remote advice"],

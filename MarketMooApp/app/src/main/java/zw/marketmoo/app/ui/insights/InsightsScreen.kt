@@ -1,5 +1,9 @@
 package zw.marketmoo.app.ui.insights
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,10 +35,10 @@ fun InsightsScreen(sl: ServiceLocator, onOpenMap: () -> Unit) {
     val cell: Cell? = remember(pin) { pin?.let { sl.packs.lookup(it.lat, it.lon) } }
     val vet = remember(pin) { pin?.let { sl.packs.nearestFeature(it.lat, it.lon, "DVS") ?: sl.packs.nearestFeature(it.lat, it.lon, "vet") } }
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("Farm Insights", style = MaterialTheme.typography.titleLarge)
+        GradientHeader("Farm Insights", "Markets, vets, water and disease risk for your land", Icons.Filled.Analytics, brush = Gradients.Mint)
         if (pin == null) {
-            Text("Set your farm pin first. Tap the map, or pick a starting point:", style = MaterialTheme.typography.bodyMedium)
-            Button(onClick = onOpenMap, modifier = Modifier.fillMaxWidth()) { Text("Open map and tap my farm") }
+            Text("Mark your farm boundary on the map (or upload a shapefile) first. You can also pick a starting point:", style = MaterialTheme.typography.bodyMedium)
+            Button(onClick = onOpenMap, modifier = Modifier.fillMaxWidth()) { Text("Open map: mark my farm boundary") }
             sl.packs.districts.forEach { d ->
                 OutlinedButton(onClick = {
                     sl.packs.features(d, "DVS").firstOrNull()?.let { sl.pin = FarmPin(it.lat, it.lon) }
@@ -42,7 +46,7 @@ fun InsightsScreen(sl: ServiceLocator, onOpenMap: () -> Unit) {
             }
             return@Column
         }
-        Text("Pin: %.4f, %.4f".format(pin.lat, pin.lon), style = MaterialTheme.typography.bodyMedium)
+        Text(sl.boundary?.let { "Farm boundary: %.2f hectares. Insights use its centre (%.4f, %.4f).".format(it.areaHa, pin.lat, pin.lon) } ?: "Pin: %.4f, %.4f".format(pin.lat, pin.lon), style = MaterialTheme.typography.bodyMedium)
         if (cell == null) {
             Text("This pin is outside the three pilot districts (Mhondoro-Ngezi, Gwanda, Beitbridge), so there is no data pack for it.", color = MaterialTheme.colorScheme.error)
             OutlinedButton(onClick = { sl.pin = null }) { Text("Clear pin") }

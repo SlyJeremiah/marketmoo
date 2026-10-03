@@ -1,5 +1,9 @@
 package zw.marketmoo.app.ui.market
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Storefront
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -67,6 +71,7 @@ fun MarketScreen(sl: ServiceLocator) {
     val ctx = LocalContext.current
     Scaffold(floatingActionButton = { if (tab != 2) ExtendedFloatingActionButton(onClick = { showForm = true }) { Text("Sell livestock") } }) { pad ->
         Column(Modifier.padding(pad)) {
+            GradientHeader("Market", "Buy, sell and pool your livestock", Icons.Filled.Storefront, modifier = Modifier.padding(16.dp), brush = Gradients.Sun)
             TabRow(selectedTabIndex = tab) {
                 Tab(selected = tab == 0, onClick = { tab = 0 }, text = { Text("Browse") })
                 Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text("Mine") })
@@ -267,8 +272,8 @@ private fun SellDialog(sl: ServiceLocator, onDismiss: () -> Unit, onSave: (SellV
         title = { Text("Sell livestock") },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                if (pin == null) Text("Set your farm pin on the Map first, so buyers can see your area (blurred to about 1 km).", color = MaterialTheme.colorScheme.error)
-                else Text("Farm pin: %.3f, %.3f".format(pin.lat, pin.lon), style = MaterialTheme.typography.bodyMedium)
+                if (pin == null) Text("Mark your farm boundary (or drop a pin) on the Map first, so buyers can see your area (blurred to about 1 km). Your outline is never shown.", color = MaterialTheme.colorScheme.error)
+                else Text(if (sl.boundary != null) "Using the centre of your farm boundary" else "Farm pin: %.3f, %.3f".format(pin.lat, pin.lon), style = MaterialTheme.typography.bodyMedium)
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) { items(species) { s -> FilterChip(selected = sp == s, onClick = { sp = s }, label = { Text(s) }) } }
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) { items(listOf("Male", "Female", "Mixed")) { s -> FilterChip(selected = sex == s, onClick = { sex = s }, label = { Text(s) }) } }
                 OutlinedTextField(breed, { breed = it }, label = { Text("Breed") }, singleLine = true)
@@ -286,7 +291,7 @@ private fun SellDialog(sl: ServiceLocator, onDismiss: () -> Unit, onSave: (SellV
             Button(onClick = {
                 val a = age.toIntOrNull(); val q = qty.toIntOrNull(); val p = price.toDoubleOrNull()
                 when {
-                    pin == null -> err = "Set your farm pin on the Map first."
+                    pin == null -> err = "Mark your farm boundary on the Map first."
                     breed.isBlank() || ward.isBlank() || phone.isBlank() -> err = "Fill breed, ward and phone."
                     a == null || q == null || q < 1 || p == null || p <= 0 -> err = "Check age, quantity and price."
                     else -> onSave(SellValues(sp, breed.trim(), sex, a, q, p, ward.trim(), phone.trim(), photo))

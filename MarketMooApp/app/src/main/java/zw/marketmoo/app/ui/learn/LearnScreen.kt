@@ -1,9 +1,13 @@
 package zw.marketmoo.app.ui.learn
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -48,6 +52,7 @@ fun LearnScreen(onReport: () -> Unit) {
     val (advisor, guides) = remember { load(ctx) }
     var tab by remember { mutableStateOf(0) }
     Column {
+        GradientHeader("Learn", "Pest and disease advisor, husbandry guides", Icons.Filled.MenuBook, modifier = Modifier.padding(16.dp), brush = Gradients.Sky)
         TabRow(selectedTabIndex = tab) {
             Tab(selected = tab == 0, onClick = { tab = 0 }, text = { Text("Pest and disease") })
             Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text("Guides") })

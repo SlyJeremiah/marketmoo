@@ -17,8 +17,8 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.1.0-trial"
-        // Empty means "no server configured": items stay Pending (see SyncWorker).
-        buildConfigField("String", "API_BASE_URL", "\"\"")
+        // Default server for new installs (can be changed under Account, for example to http://10.0.2.2:8000 on the emulator).
+        buildConfigField("String", "API_BASE_URL", "\"https://marketmoo-api.onrender.com\"")
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }
 

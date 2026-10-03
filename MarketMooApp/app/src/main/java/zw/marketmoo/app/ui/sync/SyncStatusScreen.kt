@@ -1,5 +1,9 @@
 package zw.marketmoo.app.ui.sync
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +33,7 @@ fun SyncStatusScreen(sl: ServiceLocator, online: Boolean) {
     val ctx = LocalContext.current
     val ops by sl.db.sync().observeRecent().collectAsState(initial = emptyList())
     LazyColumn(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 16.dp)) {
-        item { Text("Sync status", style = MaterialTheme.typography.titleLarge) }
+        item { GradientHeader("Sync status", "See what is saved and what is waiting", Icons.Filled.Sync, brush = Gradients.Dusk) }
         item {
             Text(
                 (if (online) "Online. " else "Offline. ") +

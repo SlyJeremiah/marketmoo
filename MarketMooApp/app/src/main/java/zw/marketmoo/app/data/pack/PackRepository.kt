@@ -33,6 +33,9 @@ class PackRepository(private val context: Context) {
         SQLiteDatabase.openDatabase(out.path, null, SQLiteDatabase.OPEN_READONLY)
     }
 
+    fun cellCount(district: String): Int =
+        open(district).rawQuery("select count(*) from cells", null).use { if (it.moveToFirst()) it.getInt(0) else 0 }
+
     /** Close a cached connection so a freshly downloaded pack file is picked up on the next lookup. */
     @Synchronized
     fun close(district: String) { dbs.remove(district)?.close() }

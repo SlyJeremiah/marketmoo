@@ -71,6 +71,7 @@ class SyncWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
         when (op.entity) {
             "record" -> sl.db.records().setStatus(op.entityId, s.name)
             "listing" -> sl.db.listings().setStatus(op.entityId, s.name)
+            "farm_boundary" -> sl.db.boundary().setStatus(op.entityId, s.name)
         }
     }
 

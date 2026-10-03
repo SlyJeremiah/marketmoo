@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -40,6 +41,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -60,7 +63,10 @@ import zw.marketmoo.app.ui.map.MapScreen
 import zw.marketmoo.app.ui.market.MarketScreen
 import zw.marketmoo.app.ui.records.RecordsScreen
 import zw.marketmoo.app.ui.sync.SyncStatusScreen
+import zw.marketmoo.app.ui.theme.Gold
+import zw.marketmoo.app.ui.theme.Gradients
 import zw.marketmoo.app.ui.theme.Green
+import zw.marketmoo.app.ui.theme.GreenDark
 import zw.marketmoo.app.ui.theme.InfoBlue
 import zw.marketmoo.app.ui.theme.OfflineOrange
 
@@ -102,41 +108,63 @@ fun AppRoot(sl: ServiceLocator) {
     val nav = rememberNavController()
     val backStack by nav.currentBackStackEntryAsState()
     val route = backStack?.destination?.route ?: "home"
+    // Back to the landing page from anywhere, clearing every screen opened on top of it.
+    val goHome: () -> Unit = {
+        if (!nav.popBackStack("home", inclusive = false)) nav.navigate("home") { popUpTo(nav.graph.findStartDestination().id) { inclusive = false }; launchSingleTop = true }
+    }
     val online by rememberOnline()
     val pending by sl.db.sync().observePendingCount().collectAsState(initial = 0)
 
     Scaffold(
         topBar = {
+            Box(Modifier.background(Gradients.TopBar)) {
             CenterAlignedTopAppBar(
-                title = { Text("MarketMoo") },
+                title = { Row { Text("Market", fontWeight = FontWeight.ExtraBold, color = Color.White); Text("Moo", fontWeight = FontWeight.ExtraBold, color = Gold) } },
+                navigationIcon = {
+                    androidx.compose.animation.AnimatedVisibility(route != "home", enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(), exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()) {
+                        IconButton(onClick = goHome) { Icon(Icons.Filled.Home, contentDescription = "Home", tint = Color.White) }
+                    }
+                },
                 actions = {
                     ConnectionChip(online, pending) { nav.navigate("sync") }
                     IconButton(onClick = { nav.navigate("account") }) { Icon(Icons.Filled.AccountCircle, contentDescription = "Account", tint = Color.White) }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Green, titleContentColor = Color.White),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent, titleContentColor = Color.White),
             )
+            }
         },
         bottomBar = {
-            NavigationBar {
+            NavigationBar(containerColor = Color.White, tonalElevation = 8.dp) {
                 tabs.forEach { t ->
                     NavigationBarItem(
                         selected = route == t.route,
                         onClick = {
-                            nav.navigate(t.route) {
+                            if (t.route == "home") goHome()
+                            else nav.navigate(t.route) {
                                 popUpTo(nav.graph.findStartDestination().id) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
                         },
-                        icon = { Icon(t.icon, contentDescription = t.label) },
-                        label = { Text(t.label) },
+                        icon = {
+                            val sc by androidx.compose.animation.core.animateFloatAsState(if (route == t.route) 1.22f else 1f, androidx.compose.animation.core.spring(androidx.compose.animation.core.Spring.DampingRatioMediumBouncy), label = "nav")
+                            Icon(t.icon, contentDescription = t.label, modifier = Modifier.scale(sc))
+                        },
+                        label = { Text(t.label, fontWeight = if (route == t.route) FontWeight.ExtraBold else FontWeight.Medium) },
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(selectedIconColor = GreenDark, selectedTextColor = GreenDark, indicatorColor = Gold, unselectedIconColor = Color(0xFF6B756E), unselectedTextColor = Color(0xFF6B756E)),
                     )
                 }
             }
         },
     ) { padding ->
-        NavHost(nav, startDestination = "home", modifier = Modifier.padding(padding).fillMaxSize()) {
-            composable("home") { HomeScreen(sl, onOpen = { nav.navigate(it) }) }
+        NavHost(
+            nav, startDestination = "home", modifier = Modifier.padding(padding).fillMaxSize(),
+            enterTransition = { androidx.compose.animation.fadeIn(androidx.compose.animation.core.tween(280)) + androidx.compose.animation.slideInVertically(androidx.compose.animation.core.tween(280)) { it / 18 } },
+            exitTransition = { androidx.compose.animation.fadeOut(androidx.compose.animation.core.tween(160)) },
+            popEnterTransition = { androidx.compose.animation.fadeIn(androidx.compose.animation.core.tween(280)) },
+            popExitTransition = { androidx.compose.animation.fadeOut(androidx.compose.animation.core.tween(160)) },
+        ) {
+            composable("home") { HomeScreen(sl, online, onOpen = { nav.navigate(it) }) }
             composable("signin") { SignInScreen(sl, onDone = { nav.popBackStack() }) }
             composable("account") { AccountScreen(sl, onSignIn = { nav.navigate("signin") }) }
             composable("report") { ReportScreen(sl, onOpenMap = { nav.navigate("map") }) }

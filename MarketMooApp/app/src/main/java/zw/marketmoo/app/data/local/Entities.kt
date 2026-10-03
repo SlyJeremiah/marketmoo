@@ -38,6 +38,19 @@ data class ListingEntity(
     val updatedAt: Long = System.currentTimeMillis(),
 )
 
+/** The farmer's outline (one per farmer). The pin used by Farm Insights is the centre of this shape. Stays private. */
+@Entity(tableName = "farm_boundaries")
+data class FarmBoundaryEntity(
+    @PrimaryKey val id: String,
+    val geojson: String,
+    val areaHa: Double,
+    val centroidLat: Double,
+    val centroidLon: Double,
+    val source: String,
+    val status: String = SyncStatus.PENDING.name,
+    val updatedAt: Long = System.currentTimeMillis(),
+)
+
 /** Operation log used by the sync worker (idempotent: the id is a client-generated UUID). */
 @Entity(tableName = "sync_ops")
 data class SyncOp(

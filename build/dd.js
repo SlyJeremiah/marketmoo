@@ -63,6 +63,15 @@ c.push(callout("Decisions taken with the group's answers", [
 ]));
 
 c.push(spacer());
+c.push(h3("Farm boundary capture (replaces the single farm pin)"));
+c.push(...bullets([
+  "**Draw on the map:** tap each corner in order, or walk the edge and add GPS positions as corners; undo, clear, live hectares; a self-crossing outline is refused with advice.",
+  "**Upload a zipped shapefile:** read entirely on the phone (no upload needed to preview). Polygon layers only; holes are ignored; geographic coordinates and UTM (WGS 84, Arc 1950 and Hartebeesthoek zones, such as 35S and 36S) are converted; points, lines, a missing .prj on projected data, unsupported projections, damaged files and zip bombs are refused with a message that says what to do. Large outlines are simplified to about 1.5 m tolerance and at most 400 points per ring.",
+  "**Checks:** the UTM conversion agrees with PROJ to 0.01 m in unit tests; the server recomputes area and centroid and rejects geometry outside Zimbabwe, over 1,500 points per ring, or over 200,000 ha.",
+  "**Pin and privacy:** the boundary centre becomes the farm pin, so Farm Insights, weather and listing distance work unchanged. The outline stays private; listings expose only a position blurred to about 1 km.",
+  "**Home button:** a Home icon in the top bar of every screen (and the Home tab) returns to the landing page and clears the screens above it.",
+]));
+c.push(spacer());
 c.push(h3("Implementation status (3 October 2026)"));
 c.push(table(["Part", "State", "Evidence"], [
   ["Android app (MarketMooApp)", "Built; compiles; not yet run on a device", "Sign-in with phone and code, encrypted offline records and listings, map, Farm Insights from real packs, authenticated sync with photo upload, pools, outbreak reports, pack updates; debug APK builds, unit tests pass"],
@@ -293,7 +302,7 @@ c.push(h1("8. Data model"));
 c.push(p("Neon PostgreSQL, accessed by Django models. Positions are stored as latitude and longitude (listings only ever as blurred public positions). IDs are UUIDs generated on the device where offline creation is possible. All tables carry created_at, updated_at, a server version and a soft-delete flag."));
 c.push(table(["Table", "Key fields", "Geometry / notes"], [
   ["users", "id, phone (unique), role (farmer, buyer, vet, admin), language, district_id, verified, consent_at", "No national ID"],
-  ["farms", "id, user_id, name, ward, livestock_types[], location_precise, location_public", "Point; public point blurred to about 1 km"],
+  ["farm_boundaries", "id, owner (one per farmer), geometry (GeoJSON MultiPolygon), area_ha, centroid_lat, centroid_lon, vertex_count, source (drawn or shapefile)", "Private: only the owner can read it; area and centroid are recomputed on the server; managers see counts and hectares only"],
   ["listings", "id, farm_id, species, breed, sex, age_months, qty, price_usd, payment_methods[], transport, status, photo_key, pool_id", "Location from farm; status server-authoritative"],
   ["pools", "id, species, target_qty, deadline, status, buyer_id, aggregation_point_id", "Aggregation point is a Point"],
   ["pool_commitments", "id, pool_id, user_id, qty, age_months, ready_date, status", "Server validates pool state"],
@@ -326,6 +335,7 @@ c.push(table(["Method and path", "Purpose", "Notes"], [
   ["POST /v1/outbreak-reports", "Suspected outbreak", "Append-only"],
   ["GET /v1/outbreaks/active?district=", "Active zones", "Also in the district pack"],
   ["GET /v1/experts?near=; GET /v1/finance?...", "Directory and programmes", "Also cached"],
+  ["GET/DELETE /v1/farm/boundary", "My farm boundary (written through sync entity farm_boundary)", "Owner only; geometry validated (inside Zimbabwe, 1500 points per ring, 200,000 ha cap)"],
   ["POST /v1/photos/presign", "Short-lived URL to upload a listing photo to B2", "Key is bound to user and listing; 150 KB limit"],
   ["POST /v1/auth/staff-login", "Dashboard sign-in (staff accounts only)", "Throttled; farmers never have passwords"],
   ["/v1/manager/* (stats, listings, users, reports, outbreaks, pools, packs)", "Dashboard moderation and analytics", "Staff or admin role required"],
@@ -418,7 +428,7 @@ c.push(table(["Risk", "Control"], [
   ["Data at rest on shared phones", "SQLCipher database; key wrapped by Android Keystore; screen lock recommended"],
   ["Injection and broken access control", "Parameterised queries; DRF permissions; row-level security; tests per role"],
   ["Transport", "HTTPS with TLS 1.3; certificate pinning for the API host [TO CONFIRM]"],
-  ["Location privacy and stock theft", "Public positions blurred to about 1 km; exact pin visible to owner and admins only; no live tracking"],
+  ["Location privacy and stock theft", "Public positions blurred to about 1 km; farm outlines are private to the owner (managers see only counts and hectares); no live tracking"],
   ["Fraudulent listings", "Verification badges; moderation of new sellers; report button; warnings about advance payments"],
   ["Sensitive outbreak data", "DVS verification before publication; area-level only; time-limited"],
   ["Personal data", "Collect phone and district only; consent screen; export and delete my data; retention limits [check Zimbabwe's data protection law]"],

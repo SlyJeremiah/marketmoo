@@ -59,3 +59,18 @@ interface SyncDao {
     @Query("SELECT COUNT(*) FROM sync_ops WHERE status != 'SYNCED'")
     fun observePendingCount(): Flow<Int>
 }
+
+@Dao
+interface BoundaryDao {
+    @Query("SELECT * FROM farm_boundaries LIMIT 1")
+    suspend fun current(): FarmBoundaryEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(b: FarmBoundaryEntity)
+
+    @Query("DELETE FROM farm_boundaries")
+    suspend fun clear()
+
+    @Query("UPDATE farm_boundaries SET status = :status WHERE id = :id")
+    suspend fun setStatus(id: String, status: String)
+}

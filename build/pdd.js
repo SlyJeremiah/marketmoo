@@ -145,7 +145,9 @@ c.push(p("Priority uses MoSCoW: **M** must, **S** should, **C** could. The relea
 c.push(h2("7.1 Functional requirements"));
 const fr = [
   ["FR-ON-01", "Onboarding", "Choose language and district; optional GPS; guest browsing without an account.", "M"],
-  ["FR-ON-02", "Onboarding", "Register and sign in with phone number and SMS one-time code; farm profile (livestock, ward, farm pin).", "M"],
+  ["FR-ON-02", "Onboarding", "Register and sign in with phone number and SMS one-time code; farm profile (livestock, ward).", "M"],
+  ["FR-ON-03", "Onboarding", "Mark the farm boundary instead of a single pin: draw it on the map (tap corners or add GPS positions as corners) or upload a zipped shapefile. Area is shown in hectares; the boundary centre drives every insight. A quick pin remains as a fallback. The outline stays private.", "M"],
+  ["FR-NV-01", "Navigation", "A Home button on every screen returns to the landing page.", "M"],
   ["FR-MK-01", "Marketplace", "Browse and search listings by species, district, price, availability and distance; list and map views.", "M"],
   ["FR-MK-02", "Marketplace", "Create a listing offline with photo (resized on device) and farm location; sync later.", "M"],
   ["FR-MK-03", "Marketplace", "Contact seller by call, SMS or a pre-filled WhatsApp message; shortlist for later.", "M"],
@@ -176,7 +178,7 @@ c.push(table(["ID", "Area", "Requirement", "Pri"], fr, [1100, 1250, 6100, 576], 
 c.push(h2("7.2 Representative user stories"));
 c.push(...bullets([
   "As a farmer with no signal, I can record a vaccination and see it marked Pending, so that I do not lose work when the network drops. (FR-RC-01, FR-CX-01)",
-  "As a farmer, I can drop a pin on my farm and see my three nearest markets with travel time, so that I choose where to sell. (FR-GI-02)",
+  "As a farmer, I can draw my farm boundary (or upload my surveyed shapefile) and see my nearest markets with travel time, so that I choose where to sell. (FR-ON-03, FR-GI-02)",
   "As a farmer, I am told when my area is under an anthrax movement restriction, so that I do not buy or sell there unknowingly. (FR-GI-05)",
   "As a buyer, I can filter listings to within 100 km of an abattoir pick-up point, so that I plan one collection trip. (FR-MK-01, FR-HB-02)",
   "As an extension officer, I can see wards beyond 60 minutes from any vet, so that I can plan outreach days. (FR-GI-06)",
@@ -197,7 +199,7 @@ c.push(spacer());
 c.push(h3("Interactive GIS features"));
 c.push(...bullets([
   "Offline basemap per district and layer toggles (markets, vets, dip tanks, water, pools, disease zones, ward scores).",
-  "Farm pin by GPS or tap; the same pin drives weather, listings by distance and every insight card.",
+  "Farm boundary (drawn, or imported from a zipped shapefile) or a quick pin; its centre drives weather, listings by distance and every insight card. The outline is private to the farmer.",
   "Result cards with a plain-language sentence and one action button; map overlays for isochrones, coverage and suitability.",
   "Public positions are blurred to about 1 km so that exact farm locations are not exposed (stock-theft risk).",
 ]));

@@ -1,5 +1,9 @@
 package zw.marketmoo.app.ui.account
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,7 +55,7 @@ fun AccountScreen(sl: ServiceLocator, onSignIn: () -> Unit) {
     var confirmWipe by remember { mutableStateOf(false) }
 
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("Account", style = MaterialTheme.typography.titleLarge)
+        GradientHeader("Account", "Your profile, server and data packs", Icons.Filled.Person, brush = Gradients.Dusk)
         if (profile == null) {
             Text("You are not signed in. Records and listings are saved on this phone and will sync after you sign in.", style = MaterialTheme.typography.bodyMedium)
             Button(onClick = onSignIn, modifier = Modifier.fillMaxWidth()) { Text("Sign in with phone number") }
@@ -73,6 +77,14 @@ fun AccountScreen(sl: ServiceLocator, onSignIn: () -> Unit) {
                     }) { Text("Save profile") }
                 }
             }
+        }
+
+        Text("Farm boundary", style = MaterialTheme.typography.titleMedium)
+        val b = sl.boundary
+        if (b == null) Text("None saved. Draw it or upload a zipped shapefile on the Map. Your outline stays private to you.", style = MaterialTheme.typography.bodyMedium)
+        else {
+            Text("%.2f hectares, %d points. Synced when you are signed in and online.".format(b.areaHa, b.vertexCount), style = MaterialTheme.typography.bodyMedium)
+            OutlinedButton(onClick = { scope.launch { sl.removeBoundary() } }, modifier = Modifier.fillMaxWidth()) { Text("Remove my farm boundary") }
         }
 
         Text("Server", style = MaterialTheme.typography.titleMedium)

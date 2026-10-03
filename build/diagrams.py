@@ -411,7 +411,7 @@ def flows_v2():
         ("i", "OTP received?", 1, 2, D),
         ("j", "Resend / voice OTP;\nentries kept locally", 2, 2, "offline"),
         ("e", "Browse as guest:\nMarket, Learn, Map", 3, 2, "end"),
-        ("k", "Role + farm profile\n(livestock, ward, pin)", 0, 2, "screen"),
+        ("k", "Role + farm profile\n(livestock, ward)", 0, 2, "screen"),
         ("l", "Farmer home\ndashboard", 0, 3, "end"),
     ], [("a", "b"), ("b", "c"), ("c", "d"), ("d", "f"), ("f", "g", "Yes"), ("f", "e", "No"), ("g", "h"), ("h", "i"),
         ("i", "k", "Yes"), ("i", "j", "No"), ("j", "g", "retry", "--"), ("k", "l")],
@@ -432,7 +432,7 @@ def flows_v2():
     flow("f3_sell", [
         ("a", "Sell livestock\n(logged in)", 0, 0, "start"),
         ("b", "Form: species, breed,\nsex, age, qty, price", 1, 0, "screen"),
-        ("c", "Confirm location:\nfarm pin (public view\nfuzzed ~1 km)", 2, 0, "screen"),
+        ("c", "Confirm location:\nboundary centre (public\nview blurred ~1 km)", 2, 0, "screen"),
         ("d", "Add photo (resized\non device, <=60 KB)", 3, 0, "action"),
         ("e", "Valid?", 3, 1, D),
         ("f", "Inline errors;\nentries kept", 2, 1, "action"),
@@ -476,7 +476,7 @@ def flows_v2():
     flow("f6_insights", [
         ("a", "Live Map &\nFarm Insights", 0, 0, "start"),
         ("b", "Basemap + layers load\nfrom device pack", 1, 0, "offline"),
-        ("c", "Set or confirm farm\npin (GPS or tap)", 2, 0, "screen"),
+        ("c", "Mark farm boundary\n(draw or shapefile)", 2, 0, "screen"),
         ("e", "Insights menu\n(choose A, B, C or D)", 1.5, 1, "screen"),
         ("f", "A  Market access:\nnearest markets,\ntravel time", 0, 2, "screen"),
         ("g", "B  Service access:\nnearest vet / dip\ntank, gaps", 1, 2, "screen"),

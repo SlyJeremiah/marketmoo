@@ -34,6 +34,7 @@ export default function Overview() {
             <Stat label="New outbreak reports" value={d.reports.new} hint={`${d.reports.total} in total`} tone={d.reports.new ? 'warn' : ''} />
             <Stat label="Active disease notices" value={d.outbreaks_active} />
             <Stat label="Open pools" value={d.pools_open} />
+            <Stat label="Farm boundaries mapped" value={d.boundaries?.count ?? 0} hint={`${d.boundaries?.total_ha ?? 0} hectares (outlines are private)`} />
             <Stat label="Farm records synced" value={d.records_total} hint={`${d.sync.rejected_total} operations rejected`} />
           </div>
           <div className="grid2">

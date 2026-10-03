@@ -1,5 +1,9 @@
 package zw.marketmoo.app.ui.help
 
+import zw.marketmoo.app.ui.components.GradientHeader
+import zw.marketmoo.app.ui.theme.Gradients
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SupportAgent
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +36,7 @@ private val experts = listOf(
 fun HelpScreen() {
     val ctx = LocalContext.current
     LazyColumn(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        item { Text("Vets and experts", style = MaterialTheme.typography.titleLarge) }
+        item { GradientHeader("Vets and experts", "Get help from people who know", Icons.Filled.SupportAgent, brush = Gradients.Sky) }
         item {
             Text(
                 "Demo entries only (not real people). In the pilot this list is sorted by distance and every expert is verified. " +
